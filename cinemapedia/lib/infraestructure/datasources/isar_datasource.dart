@@ -38,19 +38,15 @@ class IsarDataSource extends LocalStorageDataSource {
   @override
   Future<void> toggleFavorite(Movie movie) async {
     final isar = await db;
+
     final Movie? favoriteMovie =
         await isar.movies.filter().idEqualTo(movie.id).findFirst();
-    if (favoriteMovie != null) {
-      isar.writeTxnSync(() => {
-            isar.movies.deleteAllSync([favoriteMovie.isarId ?? 0])
-          });
-    }
 
-    isar.writeTxnSync(() => isar.movies.putSync(movie));
     if (favoriteMovie != null) {
       isar.writeTxnSync(() => {
             isar.movies.deleteAllSync([favoriteMovie.isarId ?? 0])
           });
+      return;
     }
     isar.writeTxnSync(() => isar.movies.putSync(movie));
   }
