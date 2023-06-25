@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "347027104091",
+    "project_id": "flutter-notificaciones-fh",
+    "storage_bucket": "flutter-notificaciones-fh.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:347027104091:android:4c69aad00822df3f62fa7e",
+        "android_client_info": {
+          "package_name": "com.jlga.push_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "347027104091-u1laoe004nde7g36souujc0e6j2udhdr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwo6z2bWJlhpsz_ILQxu6QdW_VBYwSCLQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "347027104091-u1laoe004nde7g36souujc0e6j2udhdr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
