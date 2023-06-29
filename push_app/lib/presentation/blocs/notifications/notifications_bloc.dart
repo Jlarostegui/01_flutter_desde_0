@@ -1,17 +1,23 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:push_app/domain/entities/push_message.dart';
+import 'package:push_app/firebase_options.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:push_app/firebase_options.dart';
 
 part 'notifications_event.dart';
 part 'notifications_state.dart';
+
+Future<void> firebaseMessagingBackGroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+}
 
 class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
 
   NotificationsBloc() : super(const NotificationsState()) {
     on<NotificationStatusChanged>(_notificationsStatusChanged);
+    on<NotificationsRecibida>(_onPushMessage);
     _initialStatusCheck();
     _onForegroundMessage();
   }
@@ -21,12 +27,24 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
         options: DefaultFirebaseOptions.currentPlatform);
   }
 
+  void _onPushMessage(
+      NotificationsRecibida event, Emitter<NotificationsState> emit) {
+    emit(state.copiWith(
+        notificactions: [event.pushMessage, ...state.notificactions]));
+  }
+
   void _notificationsStatusChanged(
       NotificationStatusChanged event, Emitter<NotificationsState> emit) {
     emit(
       state.copiWith(status: event.status),
     );
     _getFCMToken();
+  }
+
+  static Future<void> initializeFCM() async {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
   }
 
   void requestPermisions() async {
@@ -62,11 +80,18 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   }
 
   void _handleRemoteMessage(RemoteMessage message) async {
-    print('Got a message whilst in the foreground!');
-    print('Message data: ${message.data}');
-
     if (message.notification == null) return;
-    print('Message also contained a notification: ${message.notification}');
+
+    final PushMessage notification = PushMessage(
+        messaggeId:
+            message.messageId?.replaceAll(':', '').replaceAll('%', '') ?? '',
+        title: message.notification?.title ?? '',
+        body: message.notification?.body ?? '',
+        sentDate: message.sentTime ?? DateTime.now(),
+        imageUrl: message.notification?.android?.imageUrl,
+        data: message.data);
+
+    add(NotificationsRecibida(notification));
   }
 
   void _onForegroundMessage() {
