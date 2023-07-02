@@ -79,7 +79,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     print(token);
   }
 
-  void _handleRemoteMessage(RemoteMessage message) async {
+  void handleRemoteMessage(RemoteMessage message) async {
     if (message.notification == null) return;
 
     final PushMessage notification = PushMessage(
@@ -95,6 +95,14 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   }
 
   void _onForegroundMessage() {
-    FirebaseMessaging.onMessage.listen(_handleRemoteMessage);
+    FirebaseMessaging.onMessage.listen(handleRemoteMessage);
+  }
+
+  PushMessage? getMesaageByID(String pushMessageId) {
+    final exists = state.notificactions
+        .any((element) => element.messaggeId == pushMessageId);
+    if (!exists) return null;
+    return state.notificactions
+        .firstWhere((element) => element.messaggeId == pushMessageId);
   }
 }

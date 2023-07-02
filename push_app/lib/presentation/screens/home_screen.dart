@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:push_app/presentation/blocs/notifications/notifications_bloc.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -40,19 +41,11 @@ class _HomeView extends StatelessWidget {
           title: Text(notifications[index].title),
           subtitle: Text(notifications[index].body),
           leading: Image.network(notifications[index].imageUrl ?? ''),
+          onTap: () {
+            context.push('/push-details/${notifications[index].messaggeId}');
+          },
         );
       },
     );
-    // return ListView.builder(
-    //   itemCount: notifications.length,
-    //   itemBuilder: (context, index) {
-    //     final notification = notifications[index];
-    //     ListTile(
-    //       title: Text('hol'),
-    //       subtitle: Text(notification.body),
-    //       leading: Image.network(notification.imageUrl ?? ''),
-    // );
-    // },
-    // );
   }
 }
