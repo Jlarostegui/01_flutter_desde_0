@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-// import 'package:go_router/go_router.dart';
+import 'package:go_router/go_router.dart';
 import 'package:teslo_shop/features/shared/shared.dart';
 
 class SideMenu extends StatefulWidget {
@@ -27,8 +27,8 @@ class _SideMenuState extends State<SideMenu> {
             navDrawerIndex = value;
           });
 
-          // // final menuItem = appMenuItems[value];
-          // // context.push( menuItem.link );
+          // final menuItem = appMenuItems[value];
+          // context.push( menuItem.link );
           widget.scaffoldKey.currentState?.closeDrawer();
         },
         children: [
