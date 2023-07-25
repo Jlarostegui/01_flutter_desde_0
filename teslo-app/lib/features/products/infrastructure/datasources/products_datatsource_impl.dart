@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:teslo_shop/config/config.dart';
 import 'package:teslo_shop/features/products/domain/domain.dart';
+import 'package:teslo_shop/features/products/infrastructure/mappers/product_mapper.dart';
 
 class ProductsDataSourceImpl extends ProductsDataSource {
   late final Dio dio;
@@ -37,7 +38,9 @@ class ProductsDataSourceImpl extends ProductsDataSource {
         await dio.get<List>('api/products?limit=$limit&offset=$offset');
     final List<Product> products = [];
     for (final product in response.data ?? []) {
-      products.add(product);
+      products.add(
+        ProductMapper.jsonToEntity(product),
+      );
     }
     return products;
   }
