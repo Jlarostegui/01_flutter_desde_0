@@ -39,7 +39,6 @@ final goRouterProvider = Provider(
               ProductScreen(productId: state.queryParams['id'] ?? 'no-id'),
         ),
       ],
-
       redirect: (context, state) {
         final isGoingTo = state.subloc;
         final authStatus = goRouterNotifier.authStatus;
@@ -49,19 +48,19 @@ final goRouterProvider = Provider(
         }
 
         if (authStatus == AuthStatus.notAuthenticated) {
-          if (isGoingTo == '/login' || isGoingTo == 'register') {
-            return null;
-          }
+          if (isGoingTo == '/login' || isGoingTo == '/register') return null;
+
           return '/login';
         }
 
         if (authStatus == AuthStatus.authenticated) {
           if (isGoingTo == '/login' ||
-              isGoingTo == 'register' ||
-              isGoingTo == 'splash') {
+              isGoingTo == '/register' ||
+              isGoingTo == '/splash') {
             return '/';
           }
         }
+
         return null;
       },
 
