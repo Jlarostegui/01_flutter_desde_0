@@ -73,7 +73,7 @@ class _ProductsViewState extends ConsumerState {
         itemBuilder: (context, index) {
           final product = productsState.products[index];
           return GestureDetector(
-            onTap: () => context.push('/products/${product.id}'),
+            onTap: () => context.push('/product/${product.id}'),
             child: ProductCard(product: product),
           );
         },
