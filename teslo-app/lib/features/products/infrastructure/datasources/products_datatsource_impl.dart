@@ -13,10 +13,7 @@ class ProductsDataSourceImpl extends ProductsDataSource {
   }) : dio = Dio(
           BaseOptions(
             baseUrl: Environment.apiUrl,
-            headers: {
-              'Content-Type': 'text/plain',
-              'Authorization': 'Bearer $accessToken'
-            },
+            headers: {'Authorization': 'Bearer $accessToken'},
           ),
         );
 
@@ -25,7 +22,9 @@ class ProductsDataSourceImpl extends ProductsDataSource {
     try {
       final String? productId = productLike['id'];
       final String method = (productId == null) ? 'POST' : 'PATCH';
-      final String url = (productId == null) ? '/post' : '/product/$productId';
+      final String url =
+          (productId == null) ? '/products' : '/products/$productId';
+
       productLike.remove('id');
 
       final response = await dio.request(
@@ -33,7 +32,7 @@ class ProductsDataSourceImpl extends ProductsDataSource {
         data: productLike,
         options: Options(method: method),
       );
-      final Product product = ProductMapper.jsonToEntity(response.data);
+      final product = ProductMapper.jsonToEntity(response.data);
       return product;
     } catch (e) {
       throw Exception();

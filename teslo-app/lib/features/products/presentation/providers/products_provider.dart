@@ -2,30 +2,50 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:teslo_shop/features/products/domain/domain.dart';
 import 'package:teslo_shop/features/products/presentation/providers/products_repository_provider.dart';
 
-final productsProvider = StateNotifierProvider<ProductsNotifier,ProductsState >((ref){
-  
+final productsProvider =
+    StateNotifierProvider<ProductsNotifier, ProductsState>((ref) {
   final productsRepository = ref.watch(productsRepositoryProvider);
 
   return ProductsNotifier(productsRepository: productsRepository);
 });
 
-
-class ProductsNotifier extends StateNotifier<ProductsState>{
+class ProductsNotifier extends StateNotifier<ProductsState> {
   ProductsNotifier({required this.productsRepository})
       : super(ProductsState()) {
     loadNextPage();
   }
 
-  final ProductsRepository productsRepository;
-  Future loadNextPage () async {
-    if(state.isLoading || state.islastPage) return;
-    state = state.copyWith(isLoading: true);
-    final products = await productsRepository.getProductByPage(limit: state.limit, offset: state.offset);
-    if(products.isEmpty){
+  Future<bool> createOrUpdateProduct(Map<String, dynamic> productLike) async {
+    try {
+      final product = await productsRepository.createUpdateProduct(productLike);
+      final isProductInState =
+          state.products.any((element) => element.id == product.id);
+      if (!isProductInState) {
+        state = state.copyWith(
+          products: [...state.products, product],
+        );
+        return true;
+      }
       state = state.copyWith(
-        isLoading: false,
-        islastPage: true);
-        return;
+        products: state.products
+            .map((element) => (element.id == product.id) ? product : element)
+            .toList(),
+      );
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  final ProductsRepository productsRepository;
+  Future loadNextPage() async {
+    if (state.isLoading || state.islastPage) return;
+    state = state.copyWith(isLoading: true);
+    final products = await productsRepository.getProductByPage(
+        limit: state.limit, offset: state.offset);
+    if (products.isEmpty) {
+      state = state.copyWith(isLoading: false, islastPage: true);
+      return;
     }
     state = state.copyWith(
       isLoading: false,
@@ -35,7 +55,6 @@ class ProductsNotifier extends StateNotifier<ProductsState>{
     );
   }
 }
-
 
 class ProductsState {
   final bool islastPage;
