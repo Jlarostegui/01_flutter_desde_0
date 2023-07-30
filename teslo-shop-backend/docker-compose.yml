@@ -20,6 +20,7 @@ services:
       PORT: ${PORT}
       HOST_API: ${HOST_API}
       JWT_SECRET: ${JWT_SECRET}
+      
   
   db:
     image: postgres:15.2
@@ -37,3 +38,4 @@ services:
 volumes:
   postgres-db:
     external: false
+    restart: always
